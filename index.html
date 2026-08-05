@@ -2,483 +2,273 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة تحكم المنيو</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Restaurant CMS</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --bg:#0f1115; --panel:#171a21; --panel2:#1f232d; --border:#2a2f3a;
-    --text:#eef0f3; --muted:#9aa3b2; --accent:#3b82f6; --accent2:#2563eb;
-    --danger:#ef4444; --success:#22c55e;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; font-family:'Segoe UI', Tahoma, Arial, sans-serif;
-    background:var(--bg); color:var(--text); min-height:100vh;
-  }
-  .hidden{display:none !important;}
 
-  /* ===== شاشة الدخول ===== */
-  #loginScreen{
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-  }
-  .login-box{
-    background:var(--panel); border:1px solid var(--border); border-radius:16px;
-    padding:40px; width:100%; max-width:360px; text-align:center;
-  }
-  .login-box h1{ font-size:20px; margin-bottom:24px; }
-  .login-box input{
-    width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
-    background:var(--panel2); color:var(--text); font-size:15px; margin-bottom:14px;
-  }
-  .login-box button{ width:100%; }
-  #loginError{ color:var(--danger); font-size:13px; min-height:18px; margin-bottom:6px; }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Cairo,sans-serif;
+}
 
-  /* ===== عناصر عامة ===== */
-  button{
-    cursor:pointer; border:none; border-radius:10px; padding:11px 18px;
-    background:var(--accent); color:#fff; font-size:14px; font-weight:600;
-    transition:.15s;
-  }
-  button:hover{ background:var(--accent2); }
-  button.secondary{ background:var(--panel2); border:1px solid var(--border); color:var(--text); }
-  button.danger{ background:var(--danger); }
-  button:disabled{ opacity:.5; cursor:not-allowed; }
+body{
+background:#f5f5f5;
+}
 
-  /* ===== اللوحة الرئيسية ===== */
-  #dashboard{ max-width:1100px; margin:0 auto; padding:24px 16px; }
-  .top-bar{
-    display:flex; justify-content:space-between; align-items:center;
-    margin-bottom:20px; gap:12px; flex-wrap:wrap;
-  }
-  .top-bar h1{ font-size:20px; margin:0; }
-  .search-add{ display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
-  .search-add input{
-    flex:1; min-width:200px; padding:11px 14px; border-radius:10px;
-    border:1px solid var(--border); background:var(--panel2); color:var(--text);
-  }
+header{
+height:70px;
+background:#222;
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 25px;
+}
 
-  .grid{
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-    gap:16px;
-  }
-  .card{
-    background:var(--panel); border:1px solid var(--border); border-radius:14px;
-    overflow:hidden; display:flex; flex-direction:column;
-  }
-  .card img{ width:100%; height:150px; object-fit:cover; background:var(--panel2); }
-  .card .no-img{
-    width:100%; height:150px; display:flex; align-items:center; justify-content:center;
-    color:var(--muted); background:var(--panel2); font-size:13px;
-  }
-  .card .body{ padding:14px; flex:1; display:flex; flex-direction:column; gap:6px; }
-  .card .name{ font-weight:700; font-size:15px; }
-  .card .desc{ color:var(--muted); font-size:13px; flex:1; }
-  .card .price{ color:var(--accent); font-weight:700; }
-  .card .actions{ display:flex; gap:8px; padding:0 14px 14px; }
-  .card .actions button{ flex:1; padding:8px; font-size:13px; }
+.container{
+display:flex;
+height:calc(100vh - 70px);
+}
 
-  /* ===== نافذة الإضافة/التعديل ===== */
-  .overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex;
-    align-items:center; justify-content:center; padding:16px; z-index:50;
-  }
-  .modal{
-    background:var(--panel); border:1px solid var(--border); border-radius:16px;
-    padding:24px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto;
-  }
-  .modal h2{ margin-top:0; font-size:18px; }
-  .field{ margin-bottom:14px; }
-  .field label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
-  .field input, .field textarea{
-    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
-    background:var(--panel2); color:var(--text); font-size:14px; font-family:inherit;
-  }
-  .field textarea{ resize:vertical; min-height:70px; }
+aside{
+width:250px;
+background:#fff;
+border-left:1px solid #ddd;
+padding:20px;
+}
 
-  .image-upload-box{
-    border:2px dashed var(--border); border-radius:12px; padding:14px;
-    text-align:center; cursor:pointer; position:relative;
-  }
-  .image-upload-box img{ max-width:100%; max-height:140px; border-radius:8px; margin-bottom:8px; }
-  .image-upload-box input[type=file]{
-    position:absolute; inset:0; opacity:0; cursor:pointer;
-  }
-  .image-upload-box .hint{ color:var(--muted); font-size:12px; }
-  .upload-progress{ font-size:12px; color:var(--accent); margin-top:6px; }
+aside button{
 
-  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
-  .modal-actions button{ flex:1; }
+width:100%;
+padding:14px;
+margin-bottom:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#f2f2f2;
+font-size:16px;
 
-  .toast{
-    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    background:var(--panel2); border:1px solid var(--border); padding:12px 20px;
-    border-radius:10px; font-size:14px; z-index:100; opacity:0; transition:.3s;
-  }
-  .toast.show{ opacity:1; }
-  .toast.success{ border-color:var(--success); color:var(--success); }
-  .toast.error{ border-color:var(--danger); color:var(--danger); }
-  .empty-state{ text-align:center; color:var(--muted); padding:60px 0; }
+}
+
+aside button:hover{
+
+background:#111;
+color:white;
+
+}
+
+main{
+
+flex:1;
+padding:25px;
+overflow:auto;
+
+}
+
+.card{
+
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+th,td{
+
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:center;
+
+}
+
+img{
+
+width:70px;
+border-radius:8px;
+
+}
+
 </style>
+
 </head>
+
 <body>
 
-<!-- ===== شاشة تسجيل الدخول ===== -->
-<div id="loginScreen">
-  <div class="login-box">
-    <h1>لوحة تحكم المنيو</h1>
-    <input type="password" id="passwordInput" placeholder="الباسورد">
-    <div id="loginError"></div>
-    <button onclick="doLogin()">دخول</button>
-  </div>
+<header>
+
+<h2>Restaurant CMS</h2>
+
+<div id="restaurantName">Loading...</div>
+
+</header>
+
+<div class="container">
+
+<aside>
+
+<button onclick="loadProducts()">🍔 المنتجات</button>
+
+<button onclick="loadCategories()">📂 الأقسام</button>
+
+<button onclick="loadRestaurant()">🏪 بيانات المطعم</button>
+
+<button onclick="loadTheme()">🎨 التصميم</button>
+
+</aside>
+
+<main id="content">
+
+<div class="card">
+
+<h2>مرحباً بك</h2>
+
+<br>
+
+اختر من القائمة.
+
 </div>
 
-<!-- ===== اللوحة الرئيسية ===== -->
-<div id="dashboard" class="hidden">
-  <div class="top-bar">
-    <h1>الأصناف</h1>
-    <button class="secondary" onclick="logout()">تسجيل خروج</button>
-  </div>
+</main>
 
-  <div class="search-add">
-    <input type="text" id="searchInput" placeholder="بحث..." oninput="renderItems()">
-    <button onclick="openModal()">+ إضافة صنف</button>
-  </div>
-
-  <div id="grid" class="grid"></div>
-  <div id="emptyState" class="empty-state hidden">مفيش أصناف لسه، دوس "+ إضافة صنف"</div>
 </div>
-
-<!-- ===== نافذة إضافة/تعديل ===== -->
-<div id="modalOverlay" class="overlay hidden">
-  <div class="modal">
-    <h2 id="modalTitle">إضافة صنف</h2>
-
-    <div class="field">
-      <label>الصورة</label>
-      <div class="image-upload-box" id="uploadBox">
-        <img id="imagePreview" class="hidden">
-        <div class="hint" id="uploadHint">دوس هنا لاختيار صورة</div>
-        <input type="file" accept="image/*" id="imageFileInput" onchange="handleImageSelect(event)">
-      </div>
-      <div class="upload-progress hidden" id="uploadProgress">جاري رفع الصورة...</div>
-    </div>
-
-    <div id="dynamicFields"></div>
-
-    <div class="modal-actions">
-      <button class="secondary" onclick="closeModal()">إلغاء</button>
-      <button id="saveBtn" onclick="saveItem()">حفظ</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast" class="toast"></div>
 
 <script>
-// ⚠️ حط رابط الـ Web App بتاعك هنا
-const API_URL = "https://script.google.com/macros/s/AKfycbz9LOjCMAnF9m1Oomd_McVHmN3IoNqb-BOxps5SNvxFQNnl_CP9t1Dm-YOP6GJVuSo/exec";
 
-let headers = [];
-let items = [];
-let editingRowIndex = null;
-let pendingImageUrl = null; // رابط الصورة بعد الرفع (لو المستخدم اختار صورة جديدة)
-let currentImageValue = ""; // الرابط الحالي (في حالة التعديل)
+const API="https://script.google.com/macros/s/AKfycbwMxCA3oVEQNrpic7aoEIXRRtqQv68jFRZqaOBqeQ862stZy3musgcXM_jU6uHy0sXlUA/exec";
 
-// اسم عمود الصورة في الشيت — عدّله لو مختلف عندك
-const IMAGE_COLUMN = "صورة";
-const NAME_COLUMN = "اسم الصنف";
-const PRICE_COLUMN = "السعر";
-const DESC_COLUMN = "الوصف";
+async function api(action){
 
-// ================= أدوات مساعدة =================
+const r=await fetch(API+"?action="+action);
 
-function toast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast show " + (type || "");
-  setTimeout(() => t.classList.remove("show"), 2500);
+return await r.json();
+
 }
 
-// إرسال POST بصيغة text/plain لتفادي مشاكل الـ CORS preflight مع Apps Script
-async function callApi(payload) {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) throw new Error("فشل الاتصال بالسيرفر");
-  return res.json();
+async function loadProducts(){
+
+const json=await api("getProducts");
+
+let html=`
+
+<div class="card">
+
+<h2>المنتجات</h2>
+
+<br>
+
+<table>
+
+<tr>
+
+<th>ID</th>
+
+<th>الصنف</th>
+
+<th>السعر</th>
+
+<th>متاح</th>
+
+</tr>
+
+`;
+
+json.data.forEach(p=>{
+
+html+=`
+
+<tr>
+
+<td>${p.id}</td>
+
+<td>${p.name_ar}</td>
+
+<td>${p.base_price}</td>
+
+<td>${p.available}</td>
+
+</tr>
+
+`;
+
+});
+
+html+=`</table></div>`;
+
+content.innerHTML=html;
+
 }
 
-// ================= تسجيل الدخول =================
+async function loadCategories(){
 
-async function doLogin() {
-  const pwd = document.getElementById("passwordInput").value;
-  const errEl = document.getElementById("loginError");
-  errEl.textContent = "";
-  if (!pwd) { errEl.textContent = "اكتب الباسورد"; return; }
+const json=await api("getCategories");
 
-  try {
-    const res = await callApi({ action: "login", password: pwd });
-    if (res.success) {
-      sessionStorage.setItem("loggedIn", "1");
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
-      loadMenu();
-    } else {
-      errEl.textContent = res.message || "الباسورد غير صحيح";
-    }
-  } catch (err) {
-    errEl.textContent = "تعذر الاتصال بالسيرفر: " + err.message;
-  }
+let html=`<div class="card"><h2>الأقسام</h2><br><table>
+
+<tr>
+
+<th>ID</th>
+
+<th>الاسم</th>
+
+</tr>`;
+
+json.data.forEach(c=>{
+
+html+=`
+
+<tr>
+
+<td>${c.id}</td>
+
+<td>${c.name_ar}</td>
+
+</tr>
+
+`;
+
+});
+
+html+="</table></div>";
+
+content.innerHTML=html;
+
 }
 
-function logout() {
-  sessionStorage.removeItem("loggedIn");
-  location.reload();
+async function loadRestaurant(){
+
+const json=await api("getRestaurantInfo");
+
+restaurantName.innerHTML=json.data[0]?.restaurant_name_ar||"Restaurant";
+
+content.innerHTML="<div class='card'><pre>"+JSON.stringify(json.data,null,2)+"</pre></div>";
+
 }
 
-// ================= تحميل وعرض المنيو =================
+async function loadTheme(){
 
-async function loadMenu() {
-  try {
-    const res = await callApi({ action: "getMenu" });
-    if (res.success) {
-      headers = res.headers;
-      items = res.items;
-      renderItems();
-    } else {
-      toast(res.message || "خطأ في تحميل المنيو", "error");
-    }
-  } catch (err) {
-    toast("تعذر تحميل المنيو: " + err.message, "error");
-  }
+const json=await api("getTheme");
+
+content.innerHTML="<div class='card'><pre>"+JSON.stringify(json.data,null,2)+"</pre></div>";
+
 }
 
-function renderItems() {
-  const search = document.getElementById("searchInput").value.trim().toLowerCase();
-  const grid = document.getElementById("grid");
-  const emptyState = document.getElementById("emptyState");
-  grid.innerHTML = "";
+loadRestaurant();
 
-  const filtered = items.filter(it => {
-    if (!search) return true;
-    return Object.values(it).some(v => String(v).toLowerCase().includes(search));
-  });
-
-  if (filtered.length === 0) {
-    emptyState.classList.remove("hidden");
-    return;
-  }
-  emptyState.classList.add("hidden");
-
-  filtered.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    const imgUrl = item[IMAGE_COLUMN];
-    if (imgUrl) {
-      card.innerHTML += `<img src="${imgUrl}" alt="">`;
-    } else {
-      card.innerHTML += `<div class="no-img">بدون صورة</div>`;
-    }
-
-    card.innerHTML += `
-      <div class="body">
-        <div class="name">${item[NAME_COLUMN] || ""}</div>
-        <div class="desc">${item[DESC_COLUMN] || ""}</div>
-        <div class="price">${item[PRICE_COLUMN] ? item[PRICE_COLUMN] + " ج.م" : ""}</div>
-      </div>
-      <div class="actions">
-        <button class="secondary" onclick="openModal(${item.rowIndex})">تعديل</button>
-        <button class="danger" onclick="deleteItemConfirm(${item.rowIndex})">حذف</button>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-// ================= نافذة الإضافة/التعديل =================
-
-function openModal(rowIndex) {
-  editingRowIndex = rowIndex || null;
-  pendingImageUrl = null;
-
-  document.getElementById("modalTitle").textContent = rowIndex ? "تعديل الصنف" : "إضافة صنف";
-  document.getElementById("modalOverlay").classList.remove("hidden");
-
-  // إعادة ضبط معاينة الصورة
-  const preview = document.getElementById("imagePreview");
-  const hint = document.getElementById("uploadHint");
-  document.getElementById("imageFileInput").value = "";
-
-  let existing = {};
-  if (rowIndex) {
-    existing = items.find(it => it.rowIndex === rowIndex) || {};
-  }
-  currentImageValue = existing[IMAGE_COLUMN] || "";
-
-  if (currentImageValue) {
-    preview.src = currentImageValue;
-    preview.classList.remove("hidden");
-    hint.textContent = "دوس لتغيير الصورة";
-  } else {
-    preview.classList.add("hidden");
-    hint.textContent = "دوس هنا لاختيار صورة";
-  }
-
-  // بناء الحقول ديناميكيًا حسب أعمدة الشيت (ما عدا عمود الصورة، بنعالجه لوحده)
-  const container = document.getElementById("dynamicFields");
-  container.innerHTML = "";
-  headers.forEach(h => {
-    if (h === IMAGE_COLUMN) return;
-    const val = existing[h] !== undefined ? existing[h] : "";
-    const isLong = h === DESC_COLUMN;
-    container.innerHTML += `
-      <div class="field">
-        <label>${h}</label>
-        ${isLong
-          ? `<textarea data-field="${h}">${val}</textarea>`
-          : `<input type="text" data-field="${h}" value="${String(val).replace(/"/g,'&quot;')}">`
-        }
-      </div>
-    `;
-  });
-}
-
-function closeModal() {
-  document.getElementById("modalOverlay").classList.add("hidden");
-}
-
-// ================= رفع الصورة =================
-
-function handleImageSelect(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  compressImage(file, 900, 0.75).then(({ base64, mimeType }) => {
-    const preview = document.getElementById("imagePreview");
-    preview.src = "data:" + mimeType + ";base64," + base64;
-    preview.classList.remove("hidden");
-    document.getElementById("uploadHint").textContent = "دوس لتغيير الصورة";
-
-    // نخزن البيانات مؤقتًا، هترفع فعليًا عند الحفظ
-    pendingImageUrl = { base64, mimeType, fileName: file.name };
-  }).catch(err => {
-    toast("تعذرت معالجة الصورة: " + err.message, "error");
-  });
-}
-
-// تصغير وضغط الصورة قبل الرفع (تحويلها لـ JPEG بجودة معقولة)
-function compressImage(file, maxWidth, quality) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        let w = img.width, h = img.height;
-        if (w > maxWidth) {
-          h = Math.round(h * (maxWidth / w));
-          w = maxWidth;
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = w; canvas.height = h;
-        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/jpeg", quality);
-        const base64 = dataUrl.split(",")[1];
-        resolve({ base64, mimeType: "image/jpeg" });
-      };
-      img.onerror = () => reject(new Error("ملف صورة غير صالح"));
-      img.src = e.target.result;
-    };
-    reader.onerror = () => reject(new Error("تعذرت قراءة الملف"));
-    reader.readAsDataURL(file);
-  });
-}
-
-async function uploadPendingImageIfAny() {
-  if (!pendingImageUrl) return currentImageValue; // مفيش صورة جديدة، استخدم القديمة
-  document.getElementById("uploadProgress").classList.remove("hidden");
-  try {
-    const res = await callApi({
-      action: "uploadImage",
-      fileName: pendingImageUrl.fileName,
-      mimeType: pendingImageUrl.mimeType,
-      base64Data: pendingImageUrl.base64
-    });
-    document.getElementById("uploadProgress").classList.add("hidden");
-    if (res.success) return res.url;
-    throw new Error(res.message || "فشل رفع الصورة");
-  } catch (err) {
-    document.getElementById("uploadProgress").classList.add("hidden");
-    throw err;
-  }
-}
-
-// ================= حفظ / حذف =================
-
-async function saveItem() {
-  const saveBtn = document.getElementById("saveBtn");
-  saveBtn.disabled = true;
-  saveBtn.textContent = "جاري الحفظ...";
-
-  try {
-    const imageUrl = await uploadPendingImageIfAny();
-
-    const item = {};
-    document.querySelectorAll("#dynamicFields [data-field]").forEach(el => {
-      item[el.dataset.field] = el.value;
-    });
-    item[IMAGE_COLUMN] = imageUrl || "";
-
-    let res;
-    if (editingRowIndex) {
-      res = await callApi({ action: "editItem", rowIndex: editingRowIndex, item });
-    } else {
-      res = await callApi({ action: "addItem", item });
-    }
-
-    if (res.success) {
-      toast("تم الحفظ بنجاح", "success");
-      closeModal();
-      loadMenu();
-    } else {
-      toast(res.message || "فشل الحفظ", "error");
-    }
-  } catch (err) {
-    toast("خطأ: " + err.message, "error");
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = "حفظ";
-  }
-}
-
-function deleteItemConfirm(rowIndex) {
-  if (!confirm("متأكد إنك عايز تحذف الصنف ده؟")) return;
-  deleteItem(rowIndex);
-}
-
-async function deleteItem(rowIndex) {
-  try {
-    const res = await callApi({ action: "deleteItem", rowIndex });
-    if (res.success) {
-      toast("تم الحذف", "success");
-      loadMenu();
-    } else {
-      toast(res.message || "فشل الحذف", "error");
-    }
-  } catch (err) {
-    toast("خطأ: " + err.message, "error");
-  }
-}
-
-// ================= بدء التشغيل =================
-
-if (sessionStorage.getItem("loggedIn") === "1") {
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  loadMenu();
-}
 </script>
+
 </body>
 </html>
