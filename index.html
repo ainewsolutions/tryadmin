@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم المنيو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15181B;
+    --surface:#1F2327;
+    --surface-2:#262B2F;
+    --border:#2E3438;
+    --text:#F2EFE9;
+    --muted:#9BA3A8;
+    --gold:#CBA135;
+    --gold-dim:#8A6F26;
+    --teal:#3E8577;
+    --red:#C1524C;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Tajawal', sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,.brand{ font-family:'Almarai', sans-serif; }
+
+  /* ===== شاشة الدخول ===== */
+  #login-screen{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:40px 32px;
+    width:100%; max-width:380px;
+    text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .login-card .ticket-icon{
+    width:56px; height:56px; margin:0 auto 18px;
+    border:2px solid var(--gold);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px; color:var(--gold);
+  }
+  .login-card h1{ font-size:22px; margin-bottom:6px; }
+  .login-card p{ color:var(--muted); font-size:14px; margin-bottom:24px; }
+  input[type="password"], input[type="text"], input[type="number"], input[type="url"], textarea, select{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:12px 14px;
+    border-radius:10px;
+    font-family:'Tajawal', sans-serif;
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s;
+  }
+  input:focus, textarea:focus, select:focus{ border-color:var(--gold); }
+  textarea{ resize:vertical; min-height:70px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:12px 20px;
+    border-radius:10px;
+    border:none;
+    font-family:'Tajawal', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:transform .1s, opacity .15s;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-gold{ background:var(--gold); color:#1A1A1A; }
+  .btn-gold:hover{ opacity:.9; }
+  .btn-outline{ background:transparent; color:var(--text); border:1px solid var(--border); }
+  .btn-outline:hover{ border-color:var(--gold); }
+  .btn-danger{ background:var(--red); color:#fff; }
+  .btn-block{ width:100%; }
+  .error-msg{
+    color:var(--red);
+    font-size:13px;
+    margin-top:10px;
+    min-height:18px;
+  }
+
+  /* ===== التطبيق الرئيسي ===== */
+  #app{ display:none; }
+  header.topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px;
+    border-bottom:1px solid var(--border);
+    position:sticky; top:0; background:var(--bg); z-index:10;
+  }
+  .brand{ font-size:20px; color:var(--gold); display:flex; align-items:center; gap:10px; }
+  .brand small{ font-family:'Tajawal',sans-serif; color:var(--muted); font-size:12px; font-weight:400; display:block; }
+
+  .toolbar{
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+    padding:20px 28px 0;
+  }
+  .toolbar .search-box{
+    flex:1; min-width:200px; max-width:340px;
+  }
+  main{ padding:20px 28px 60px; max-width:1100px; margin:0 auto; }
+
+  .status-banner{
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:10px; padding:12px 16px; margin-bottom:16px;
+    font-size:14px; color:var(--muted); text-align:center;
+  }
+  .status-banner.error{ border-color:var(--red); color:var(--red); }
+  .status-banner.success{ border-color:var(--teal); color:var(--teal); }
+
+  /* بطاقات الأصناف على شكل تذكرة */
+  .items-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px;
+    margin-top:16px;
+  }
+  .item-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+    display:flex; flex-direction:column;
+  }
+  .item-card::before{
+    content:"";
+    position:absolute; top:0; bottom:0; right:0;
+    width:0;
+    border-right:2px dashed var(--border);
+  }
+  .item-thumb{
+    width:100%; height:140px; object-fit:cover;
+    background:var(--surface-2);
+    display:block;
+  }
+  .item-thumb.placeholder{
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:13px;
+  }
+  .item-body{ padding:14px 16px; flex:1; display:flex; flex-direction:column; gap:6px; }
+  .item-id-badge{
+    position:absolute; top:10px; left:10px;
+    background:rgba(0,0,0,.55);
+    color:var(--gold);
+    font-size:11px; font-weight:700;
+    padding:3px 9px; border-radius:20px;
+    border:1px solid var(--gold-dim);
+  }
+  .item-field{ font-size:13px; color:var(--muted); }
+  .item-field strong{ color:var(--text); font-weight:500; }
+  .item-name{ font-size:16px; font-weight:700; color:var(--text); }
+  .item-price{
+    font-family:'Almarai', sans-serif; font-weight:800; color:var(--gold); font-size:17px;
+    margin-top:auto; padding-top:8px; border-top:1px dashed var(--border);
+  }
+  .item-actions{ display:flex; gap:8px; padding:0 16px 14px; }
+  .item-actions .btn{ flex:1; padding:8px; font-size:13px; }
+
+  /* ===== المودال (فورم الإضافة/التعديل) ===== */
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0; background:rgba(0,0,0,.6);
+    align-items:center; justify-content:center; padding:20px; z-index:100;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:28px;
+    width:100%; max-width:460px;
+    max-height:90vh; overflow-y:auto;
+  }
+  .modal-box h2{ font-size:19px; margin-bottom:18px; }
+  .field-group{ margin-bottom:14px; text-align:right; }
+  .field-group label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:20px; }
+  .modal-actions .btn{ flex:1; }
+
+  .empty-state{ text-align:center; padding:60px 20px; color:var(--muted); }
+  .empty-state .btn{ margin-top:16px; }
+
+  @media (max-width:600px){
+    header.topbar, .toolbar, main{ padding-left:16px; padding-right:16px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- شاشة تسجيل الدخول -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="ticket-icon">🔒</div>
+      <h1>لوحة تحكم المنيو</h1>
+      <p>ادخل كلمة السر للمتابعة</p>
+      <input type="password" id="password-input" placeholder="كلمة السر" autofocus>
+      <div class="error-msg" id="login-error"></div>
+      <button class="btn btn-gold btn-block" id="login-btn" style="margin-top:6px;">دخول</button>
+    </div>
+  </div>
+
+  <!-- التطبيق الرئيسي -->
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">🍽️ لوحة تحكم المنيو</div>
+      <button class="btn btn-outline" id="logout-btn">خروج</button>
+    </header>
+
+    <div class="toolbar">
+      <input type="text" class="search-box" id="search-input" placeholder="ابحث عن صنف...">
+      <button class="btn btn-gold" id="add-btn">+ إضافة صنف جديد</button>
+    </div>
+
+    <main>
+      <div id="status-area"></div>
+      <div id="items-container" class="items-grid"></div>
+    </main>
+  </div>
+
+  <!-- مودال إضافة / تعديل -->
+  <div class="modal-overlay" id="form-modal">
+    <div class="modal-box">
+      <h2 id="form-title">إضافة صنف جديد</h2>
+      <div id="form-fields"></div>
+      <div class="error-msg" id="form-error"></div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" id="cancel-btn">إلغاء</button>
+        <button class="btn btn-gold" id="save-btn">حفظ</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ===== الإعدادات =====
+  const API_URL = "https://script.google.com/macros/s/AKfycbz9LOjCMAnF9m1Oomd_McVHmN3IoNqb-BOxps5SNvxFQNnl_CP9t1Dm-YOP6GJVuSo/exec";
+
+  // ===== الحالة =====
+  let menuItems = [];
+  let menuHeaders = [];
+  let currentPassword = sessionStorage.getItem("adminPass") || "";
+  let editingId = null;
+
+  const $ = (sel) => document.querySelector(sel);
+
+  // ===== أدوات مساعدة =====
+  function isImageKey(key){ return /صورة|image|رابط/i.test(key); }
+  function isPriceKey(key){ return /سعر|price|تكلفة/i.test(key); }
+  function isLongTextKey(key){ return /وصف|description|ملاحظ/i.test(key); }
+
+  function showStatus(msg, type){
+    const area = $("#status-area");
+    area.innerHTML = `<div class="status-banner ${type||''}">${msg}</div>`;
+  }
+  function clearStatus(){ $("#status-area").innerHTML = ""; }
+
+  async function apiGet(action){
+    const res = await fetch(`${API_URL}?action=${action}`);
+    return res.json();
+  }
+  async function apiPost(body){
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, // يتفادى مشاكل CORS مع Apps Script
+      body: JSON.stringify(body)
+    });
+    return res.json();
+  }
+
+  // ===== تسجيل الدخول =====
+  $("#login-btn").addEventListener("click", doLogin);
+  $("#password-input").addEventListener("keydown", (e) => { if(e.key === "Enter") doLogin(); });
+
+  async function doLogin(){
+    const pass = $("#password-input").value.trim();
+    const errEl = $("#login-error");
+    errEl.textContent = "";
+    if(!pass){ errEl.textContent = "اكتب كلمة السر"; return; }
+
+    $("#login-btn").textContent = "جاري التحقق...";
+    try{
+      const result = await apiPost({ action: "login", password: pass });
+      if(result.success){
+        currentPassword = pass;
+        sessionStorage.setItem("adminPass", pass);
+        enterApp();
+      } else {
+        errEl.textContent = "كلمة السر غير صحيحة";
+      }
+    } catch(err){
+      errEl.textContent = "في مشكلة في الاتصال بالسيرفر";
+    }
+    $("#login-btn").textContent = "دخول";
+  }
+
+  function enterApp(){
+    $("#login-screen").style.display = "none";
+    $("#app").style.display = "block";
+    loadMenu();
+  }
+
+  $("#logout-btn").addEventListener("click", () => {
+    sessionStorage.removeItem("adminPass");
+    currentPassword = "";
+    $("#app").style.display = "none";
+    $("#login-screen").style.display = "flex";
+    $("#password-input").value = "";
+  });
+
+  // ===== تحميل المنيو =====
+  async function loadMenu(){
+    showStatus("جاري تحميل المنيو...", "");
+    try{
+      const result = await apiGet("getMenu");
+      if(result.success){
+        menuItems = result.data;
+        menuHeaders = menuItems.length ? Object.keys(menuItems[0]).filter(k => k !== "id") : [];
+        clearStatus();
+        renderItems(menuItems);
+      } else {
+        showStatus("تعذر تحميل المنيو", "error");
+      }
+    } catch(err){
+      showStatus("في مشكلة في الاتصال بالسيرفر", "error");
+    }
+  }
+
+  // ===== عرض الأصناف =====
+  function renderItems(items){
+    const container = $("#items-container");
+    if(!items.length){
+      container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <div>مفيش أصناف لسه</div>
+        <button class="btn btn-gold" onclick="openForm()">+ إضافة أول صنف</button>
+      </div>`;
+      return;
+    }
+
+    container.innerHTML = items.map(item => {
+      const imgKey = menuHeaders.find(isImageKey);
+      const priceKey = menuHeaders.find(isPriceKey);
+      const nameKey = menuHeaders.find(k => !isImageKey(k) && !isPriceKey(k) && !isLongTextKey(k)) || menuHeaders[0];
+      const otherKeys = menuHeaders.filter(k => k !== imgKey && k !== priceKey && k !== nameKey);
+
+      const imgUrl = imgKey ? item[imgKey] : "";
+      const thumb = imgUrl
+        ? `<img class="item-thumb" src="${escapeAttr(imgUrl)}" onerror="this.outerHTML='<div class=&quot;item-thumb placeholder&quot;>بلا صورة</div>'">`
+        : `<div class="item-thumb placeholder">بلا صورة</div>`;
+
+      return `
+        <div class="item-card">
+          <span class="item-id-badge">#${item.id}</span>
+          ${thumb}
+          <div class="item-body">
+            <div class="item-name">${escapeHtml(nameKey ? item[nameKey] : '')}</div>
+            ${otherKeys.map(k => `<div class="item-field"><strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(item[k] ?? ''))}</div>`).join('')}
+            ${priceKey ? `<div class="item-price">${escapeHtml(String(item[priceKey]))}</div>` : ''}
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-outline" onclick="openForm(${item.id})">تعديل</button>
+            <button class="btn btn-danger" onclick="deleteItemConfirm(${item.id})">حذف</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function escapeAttr(str){ return escapeHtml(str); }
+
+  // ===== البحث =====
+  $("#search-input").addEventListener("input", (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    if(!q){ renderItems(menuItems); return; }
+    const filtered = menuItems.filter(item =>
+      Object.values(item).some(v => String(v).toLowerCase().includes(q))
+    );
+    renderItems(filtered);
+  });
+
+  // ===== فورم الإضافة/التعديل =====
+  $("#add-btn").addEventListener("click", () => openForm());
+  $("#cancel-btn").addEventListener("click", closeForm);
+
+  function openForm(id){
+    editingId = id || null;
+    const item = id ? menuItems.find(i => i.id === id) : null;
+    $("#form-title").textContent = item ? "تعديل الصنف" : "إضافة صنف جديد";
+    $("#form-error").textContent = "";
+
+    $("#form-fields").innerHTML = menuHeaders.map(key => {
+      const val = item ? (item[key] ?? "") : "";
+      if(isLongTextKey(key)){
+        return `<div class="field-group"><label>${escapeHtml(key)}</label>
+          <textarea data-field="${escapeAttr(key)}">${escapeHtml(val)}</textarea></div>`;
+      }
+      if(isPriceKey(key)){
+        return `<div class="field-group"><label>${escapeHtml(key)}</label>
+          <input type="number" step="0.01" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}"></div>`;
+      }
+      if(isImageKey(key)){
+        return `<div class="field-group"><label>${escapeHtml(key)}</label>
+          <input type="url" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}" placeholder="https://..."></div>`;
+      }
+      return `<div class="field-group"><label>${escapeHtml(key)}</label>
+        <input type="text" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}"></div>`;
+    }).join('');
+
+    $("#form-modal").classList.add("open");
+  }
+
+  function closeForm(){
+    $("#form-modal").classList.remove("open");
+    editingId = null;
+  }
+
+  $("#save-btn").addEventListener("click", async () => {
+    const fields = document.querySelectorAll("#form-fields [data-field]");
+    const item = {};
+    fields.forEach(f => item[f.dataset.field] = f.value);
+    if(editingId) item.id = editingId;
+
+    $("#save-btn").textContent = "جاري الحفظ...";
+    $("#form-error").textContent = "";
+    try{
+      const action = editingId ? "updateItem" : "addItem";
+      const result = await apiPost({ action, item, password: currentPassword });
+      if(result.success){
+        closeForm();
+        loadMenu();
+      } else {
+        $("#form-error").textContent = result.error || "حصل خطأ، حاول تاني";
+      }
+    } catch(err){
+      $("#form-error").textContent = "في مشكلة في الاتصال بالسيرفر";
+    }
+    $("#save-btn").textContent = "حفظ";
+  });
+
+  // ===== الحذف =====
+  async function deleteItemConfirm(id){
+    if(!confirm("متأكد إنك عايز تحذف الصنف ده؟")) return;
+    showStatus("جاري الحذف...", "");
+    try{
+      const result = await apiPost({ action: "deleteItem", id, password: currentPassword });
+      if(result.success){
+        showStatus("تم الحذف", "success");
+        loadMenu();
+      } else {
+        showStatus(result.error || "تعذر الحذف", "error");
+      }
+    } catch(err){
+      showStatus("في مشكلة في الاتصال بالسيرفر", "error");
+    }
+  }
+
+  // ===== دخول تلقائي لو الباسورد محفوظة في الجلسة =====
+  if(currentPassword){
+    enterApp();
+  }
+</script>
+</body>
+</html>
