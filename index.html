@@ -4,470 +4,481 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة تحكم المنيو</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#15181B;
-    --surface:#1F2327;
-    --surface-2:#262B2F;
-    --border:#2E3438;
-    --text:#F2EFE9;
-    --muted:#9BA3A8;
-    --gold:#CBA135;
-    --gold-dim:#8A6F26;
-    --teal:#3E8577;
-    --red:#C1524C;
+    --bg:#0f1115; --panel:#171a21; --panel2:#1f232d; --border:#2a2f3a;
+    --text:#eef0f3; --muted:#9aa3b2; --accent:#3b82f6; --accent2:#2563eb;
+    --danger:#ef4444; --success:#22c55e;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
+  *{box-sizing:border-box;}
   body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Tajawal', sans-serif;
-    min-height:100vh;
+    margin:0; font-family:'Segoe UI', Tahoma, Arial, sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
   }
-  h1,h2,h3,.brand{ font-family:'Almarai', sans-serif; }
+  .hidden{display:none !important;}
 
   /* ===== شاشة الدخول ===== */
-  #login-screen{
-    min-height:100vh;
-    display:flex; align-items:center; justify-content:center;
-    padding:24px;
+  #loginScreen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
   }
-  .login-card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:40px 32px;
-    width:100%; max-width:380px;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  .login-box{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px;
+    padding:40px; width:100%; max-width:360px; text-align:center;
   }
-  .login-card .ticket-icon{
-    width:56px; height:56px; margin:0 auto 18px;
-    border:2px solid var(--gold);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:26px; color:var(--gold);
+  .login-box h1{ font-size:20px; margin-bottom:24px; }
+  .login-box input{
+    width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+    background:var(--panel2); color:var(--text); font-size:15px; margin-bottom:14px;
   }
-  .login-card h1{ font-size:22px; margin-bottom:6px; }
-  .login-card p{ color:var(--muted); font-size:14px; margin-bottom:24px; }
-  input[type="password"], input[type="text"], input[type="number"], input[type="url"], textarea, select{
-    width:100%;
-    background:var(--surface-2);
-    border:1px solid var(--border);
-    color:var(--text);
-    padding:12px 14px;
-    border-radius:10px;
-    font-family:'Tajawal', sans-serif;
-    font-size:15px;
-    outline:none;
-    transition:border-color .15s;
+  .login-box button{ width:100%; }
+  #loginError{ color:var(--danger); font-size:13px; min-height:18px; margin-bottom:6px; }
+
+  /* ===== عناصر عامة ===== */
+  button{
+    cursor:pointer; border:none; border-radius:10px; padding:11px 18px;
+    background:var(--accent); color:#fff; font-size:14px; font-weight:600;
+    transition:.15s;
   }
-  input:focus, textarea:focus, select:focus{ border-color:var(--gold); }
-  textarea{ resize:vertical; min-height:70px; }
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    padding:12px 20px;
-    border-radius:10px;
-    border:none;
-    font-family:'Tajawal', sans-serif;
-    font-weight:700;
-    font-size:15px;
-    cursor:pointer;
-    transition:transform .1s, opacity .15s;
+  button:hover{ background:var(--accent2); }
+  button.secondary{ background:var(--panel2); border:1px solid var(--border); color:var(--text); }
+  button.danger{ background:var(--danger); }
+  button:disabled{ opacity:.5; cursor:not-allowed; }
+
+  /* ===== اللوحة الرئيسية ===== */
+  #dashboard{ max-width:1100px; margin:0 auto; padding:24px 16px; }
+  .top-bar{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:20px; gap:12px; flex-wrap:wrap;
   }
-  .btn:active{ transform:scale(.97); }
-  .btn-gold{ background:var(--gold); color:#1A1A1A; }
-  .btn-gold:hover{ opacity:.9; }
-  .btn-outline{ background:transparent; color:var(--text); border:1px solid var(--border); }
-  .btn-outline:hover{ border-color:var(--gold); }
-  .btn-danger{ background:var(--red); color:#fff; }
-  .btn-block{ width:100%; }
-  .error-msg{
-    color:var(--red);
-    font-size:13px;
-    margin-top:10px;
-    min-height:18px;
+  .top-bar h1{ font-size:20px; margin:0; }
+  .search-add{ display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+  .search-add input{
+    flex:1; min-width:200px; padding:11px 14px; border-radius:10px;
+    border:1px solid var(--border); background:var(--panel2); color:var(--text);
   }
 
-  /* ===== التطبيق الرئيسي ===== */
-  #app{ display:none; }
-  header.topbar{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 28px;
-    border-bottom:1px solid var(--border);
-    position:sticky; top:0; background:var(--bg); z-index:10;
-  }
-  .brand{ font-size:20px; color:var(--gold); display:flex; align-items:center; gap:10px; }
-  .brand small{ font-family:'Tajawal',sans-serif; color:var(--muted); font-size:12px; font-weight:400; display:block; }
-
-  .toolbar{
-    display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
-    padding:20px 28px 0;
-  }
-  .toolbar .search-box{
-    flex:1; min-width:200px; max-width:340px;
-  }
-  main{ padding:20px 28px 60px; max-width:1100px; margin:0 auto; }
-
-  .status-banner{
-    background:var(--surface-2); border:1px solid var(--border);
-    border-radius:10px; padding:12px 16px; margin-bottom:16px;
-    font-size:14px; color:var(--muted); text-align:center;
-  }
-  .status-banner.error{ border-color:var(--red); color:var(--red); }
-  .status-banner.success{ border-color:var(--teal); color:var(--teal); }
-
-  /* بطاقات الأصناف على شكل تذكرة */
-  .items-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
     gap:16px;
-    margin-top:16px;
   }
-  .item-card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:14px;
-    overflow:hidden;
-    position:relative;
-    display:flex; flex-direction:column;
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    overflow:hidden; display:flex; flex-direction:column;
   }
-  .item-card::before{
-    content:"";
-    position:absolute; top:0; bottom:0; right:0;
-    width:0;
-    border-right:2px dashed var(--border);
+  .card img{ width:100%; height:150px; object-fit:cover; background:var(--panel2); }
+  .card .no-img{
+    width:100%; height:150px; display:flex; align-items:center; justify-content:center;
+    color:var(--muted); background:var(--panel2); font-size:13px;
   }
-  .item-thumb{
-    width:100%; height:140px; object-fit:cover;
-    background:var(--surface-2);
-    display:block;
-  }
-  .item-thumb.placeholder{
-    display:flex; align-items:center; justify-content:center;
-    color:var(--muted); font-size:13px;
-  }
-  .item-body{ padding:14px 16px; flex:1; display:flex; flex-direction:column; gap:6px; }
-  .item-id-badge{
-    position:absolute; top:10px; left:10px;
-    background:rgba(0,0,0,.55);
-    color:var(--gold);
-    font-size:11px; font-weight:700;
-    padding:3px 9px; border-radius:20px;
-    border:1px solid var(--gold-dim);
-  }
-  .item-field{ font-size:13px; color:var(--muted); }
-  .item-field strong{ color:var(--text); font-weight:500; }
-  .item-name{ font-size:16px; font-weight:700; color:var(--text); }
-  .item-price{
-    font-family:'Almarai', sans-serif; font-weight:800; color:var(--gold); font-size:17px;
-    margin-top:auto; padding-top:8px; border-top:1px dashed var(--border);
-  }
-  .item-actions{ display:flex; gap:8px; padding:0 16px 14px; }
-  .item-actions .btn{ flex:1; padding:8px; font-size:13px; }
+  .card .body{ padding:14px; flex:1; display:flex; flex-direction:column; gap:6px; }
+  .card .name{ font-weight:700; font-size:15px; }
+  .card .desc{ color:var(--muted); font-size:13px; flex:1; }
+  .card .price{ color:var(--accent); font-weight:700; }
+  .card .actions{ display:flex; gap:8px; padding:0 14px 14px; }
+  .card .actions button{ flex:1; padding:8px; font-size:13px; }
 
-  /* ===== المودال (فورم الإضافة/التعديل) ===== */
-  .modal-overlay{
-    display:none;
-    position:fixed; inset:0; background:rgba(0,0,0,.6);
-    align-items:center; justify-content:center; padding:20px; z-index:100;
+  /* ===== نافذة الإضافة/التعديل ===== */
+  .overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex;
+    align-items:center; justify-content:center; padding:16px; z-index:50;
   }
-  .modal-overlay.open{ display:flex; }
-  .modal-box{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:16px; padding:28px;
-    width:100%; max-width:460px;
-    max-height:90vh; overflow-y:auto;
+  .modal{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px;
+    padding:24px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto;
   }
-  .modal-box h2{ font-size:19px; margin-bottom:18px; }
-  .field-group{ margin-bottom:14px; text-align:right; }
-  .field-group label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
-  .modal-actions{ display:flex; gap:10px; margin-top:20px; }
-  .modal-actions .btn{ flex:1; }
+  .modal h2{ margin-top:0; font-size:18px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  .field input, .field textarea{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    background:var(--panel2); color:var(--text); font-size:14px; font-family:inherit;
+  }
+  .field textarea{ resize:vertical; min-height:70px; }
 
-  .empty-state{ text-align:center; padding:60px 20px; color:var(--muted); }
-  .empty-state .btn{ margin-top:16px; }
-
-  @media (max-width:600px){
-    header.topbar, .toolbar, main{ padding-left:16px; padding-right:16px; }
+  .image-upload-box{
+    border:2px dashed var(--border); border-radius:12px; padding:14px;
+    text-align:center; cursor:pointer; position:relative;
   }
+  .image-upload-box img{ max-width:100%; max-height:140px; border-radius:8px; margin-bottom:8px; }
+  .image-upload-box input[type=file]{
+    position:absolute; inset:0; opacity:0; cursor:pointer;
+  }
+  .image-upload-box .hint{ color:var(--muted); font-size:12px; }
+  .upload-progress{ font-size:12px; color:var(--accent); margin-top:6px; }
+
+  .modal-actions{ display:flex; gap:10px; margin-top:18px; }
+  .modal-actions button{ flex:1; }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--panel2); border:1px solid var(--border); padding:12px 20px;
+    border-radius:10px; font-size:14px; z-index:100; opacity:0; transition:.3s;
+  }
+  .toast.show{ opacity:1; }
+  .toast.success{ border-color:var(--success); color:var(--success); }
+  .toast.error{ border-color:var(--danger); color:var(--danger); }
+  .empty-state{ text-align:center; color:var(--muted); padding:60px 0; }
 </style>
 </head>
 <body>
 
-  <!-- شاشة تسجيل الدخول -->
-  <div id="login-screen">
-    <div class="login-card">
-      <div class="ticket-icon">🔒</div>
-      <h1>لوحة تحكم المنيو</h1>
-      <p>ادخل كلمة السر للمتابعة</p>
-      <input type="password" id="password-input" placeholder="كلمة السر" autofocus>
-      <div class="error-msg" id="login-error"></div>
-      <button class="btn btn-gold btn-block" id="login-btn" style="margin-top:6px;">دخول</button>
-    </div>
+<!-- ===== شاشة تسجيل الدخول ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <h1>لوحة تحكم المنيو</h1>
+    <input type="password" id="passwordInput" placeholder="الباسورد">
+    <div id="loginError"></div>
+    <button onclick="doLogin()">دخول</button>
+  </div>
+</div>
+
+<!-- ===== اللوحة الرئيسية ===== -->
+<div id="dashboard" class="hidden">
+  <div class="top-bar">
+    <h1>الأصناف</h1>
+    <button class="secondary" onclick="logout()">تسجيل خروج</button>
   </div>
 
-  <!-- التطبيق الرئيسي -->
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">🍽️ لوحة تحكم المنيو</div>
-      <button class="btn btn-outline" id="logout-btn">خروج</button>
-    </header>
-
-    <div class="toolbar">
-      <input type="text" class="search-box" id="search-input" placeholder="ابحث عن صنف...">
-      <button class="btn btn-gold" id="add-btn">+ إضافة صنف جديد</button>
-    </div>
-
-    <main>
-      <div id="status-area"></div>
-      <div id="items-container" class="items-grid"></div>
-    </main>
+  <div class="search-add">
+    <input type="text" id="searchInput" placeholder="بحث..." oninput="renderItems()">
+    <button onclick="openModal()">+ إضافة صنف</button>
   </div>
 
-  <!-- مودال إضافة / تعديل -->
-  <div class="modal-overlay" id="form-modal">
-    <div class="modal-box">
-      <h2 id="form-title">إضافة صنف جديد</h2>
-      <div id="form-fields"></div>
-      <div class="error-msg" id="form-error"></div>
-      <div class="modal-actions">
-        <button class="btn btn-outline" id="cancel-btn">إلغاء</button>
-        <button class="btn btn-gold" id="save-btn">حفظ</button>
+  <div id="grid" class="grid"></div>
+  <div id="emptyState" class="empty-state hidden">مفيش أصناف لسه، دوس "+ إضافة صنف"</div>
+</div>
+
+<!-- ===== نافذة إضافة/تعديل ===== -->
+<div id="modalOverlay" class="overlay hidden">
+  <div class="modal">
+    <h2 id="modalTitle">إضافة صنف</h2>
+
+    <div class="field">
+      <label>الصورة</label>
+      <div class="image-upload-box" id="uploadBox">
+        <img id="imagePreview" class="hidden">
+        <div class="hint" id="uploadHint">دوس هنا لاختيار صورة</div>
+        <input type="file" accept="image/*" id="imageFileInput" onchange="handleImageSelect(event)">
       </div>
+      <div class="upload-progress hidden" id="uploadProgress">جاري رفع الصورة...</div>
+    </div>
+
+    <div id="dynamicFields"></div>
+
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeModal()">إلغاء</button>
+      <button id="saveBtn" onclick="saveItem()">حفظ</button>
     </div>
   </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
-  // ===== الإعدادات =====
-  const API_URL = "https://script.google.com/macros/s/AKfycbz9LOjCMAnF9m1Oomd_McVHmN3IoNqb-BOxps5SNvxFQNnl_CP9t1Dm-YOP6GJVuSo/exec";
+// ⚠️ حط رابط الـ Web App بتاعك هنا
+const API_URL = "https://script.google.com/macros/s/AKfycbz9LOjCMAnF9m1Oomd_McVHmN3IoNqb-BOxps5SNvxFQNnl_CP9t1Dm-YOP6GJVuSo/exec";
 
-  // ===== الحالة =====
-  let menuItems = [];
-  let menuHeaders = [];
-  let currentPassword = sessionStorage.getItem("adminPass") || "";
-  let editingId = null;
+let headers = [];
+let items = [];
+let editingRowIndex = null;
+let pendingImageUrl = null; // رابط الصورة بعد الرفع (لو المستخدم اختار صورة جديدة)
+let currentImageValue = ""; // الرابط الحالي (في حالة التعديل)
 
-  const $ = (sel) => document.querySelector(sel);
+// اسم عمود الصورة في الشيت — عدّله لو مختلف عندك
+const IMAGE_COLUMN = "صورة";
+const NAME_COLUMN = "اسم الصنف";
+const PRICE_COLUMN = "السعر";
+const DESC_COLUMN = "الوصف";
 
-  // ===== أدوات مساعدة =====
-  function isImageKey(key){ return /صورة|image|رابط/i.test(key); }
-  function isPriceKey(key){ return /سعر|price|تكلفة/i.test(key); }
-  function isLongTextKey(key){ return /وصف|description|ملاحظ/i.test(key); }
+// ================= أدوات مساعدة =================
 
-  function showStatus(msg, type){
-    const area = $("#status-area");
-    area.innerHTML = `<div class="status-banner ${type||''}">${msg}</div>`;
+function toast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show " + (type || "");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+// إرسال POST بصيغة text/plain لتفادي مشاكل الـ CORS preflight مع Apps Script
+async function callApi(payload) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("فشل الاتصال بالسيرفر");
+  return res.json();
+}
+
+// ================= تسجيل الدخول =================
+
+async function doLogin() {
+  const pwd = document.getElementById("passwordInput").value;
+  const errEl = document.getElementById("loginError");
+  errEl.textContent = "";
+  if (!pwd) { errEl.textContent = "اكتب الباسورد"; return; }
+
+  try {
+    const res = await callApi({ action: "login", password: pwd });
+    if (res.success) {
+      sessionStorage.setItem("loggedIn", "1");
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+      loadMenu();
+    } else {
+      errEl.textContent = res.message || "الباسورد غير صحيح";
+    }
+  } catch (err) {
+    errEl.textContent = "تعذر الاتصال بالسيرفر: " + err.message;
   }
-  function clearStatus(){ $("#status-area").innerHTML = ""; }
+}
 
-  async function apiGet(action){
-    const res = await fetch(`${API_URL}?action=${action}`);
-    return res.json();
+function logout() {
+  sessionStorage.removeItem("loggedIn");
+  location.reload();
+}
+
+// ================= تحميل وعرض المنيو =================
+
+async function loadMenu() {
+  try {
+    const res = await callApi({ action: "getMenu" });
+    if (res.success) {
+      headers = res.headers;
+      items = res.items;
+      renderItems();
+    } else {
+      toast(res.message || "خطأ في تحميل المنيو", "error");
+    }
+  } catch (err) {
+    toast("تعذر تحميل المنيو: " + err.message, "error");
   }
-  async function apiPost(body){
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" }, // يتفادى مشاكل CORS مع Apps Script
-      body: JSON.stringify(body)
+}
+
+function renderItems() {
+  const search = document.getElementById("searchInput").value.trim().toLowerCase();
+  const grid = document.getElementById("grid");
+  const emptyState = document.getElementById("emptyState");
+  grid.innerHTML = "";
+
+  const filtered = items.filter(it => {
+    if (!search) return true;
+    return Object.values(it).some(v => String(v).toLowerCase().includes(search));
+  });
+
+  if (filtered.length === 0) {
+    emptyState.classList.remove("hidden");
+    return;
+  }
+  emptyState.classList.add("hidden");
+
+  filtered.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const imgUrl = item[IMAGE_COLUMN];
+    if (imgUrl) {
+      card.innerHTML += `<img src="${imgUrl}" alt="">`;
+    } else {
+      card.innerHTML += `<div class="no-img">بدون صورة</div>`;
+    }
+
+    card.innerHTML += `
+      <div class="body">
+        <div class="name">${item[NAME_COLUMN] || ""}</div>
+        <div class="desc">${item[DESC_COLUMN] || ""}</div>
+        <div class="price">${item[PRICE_COLUMN] ? item[PRICE_COLUMN] + " ج.م" : ""}</div>
+      </div>
+      <div class="actions">
+        <button class="secondary" onclick="openModal(${item.rowIndex})">تعديل</button>
+        <button class="danger" onclick="deleteItemConfirm(${item.rowIndex})">حذف</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ================= نافذة الإضافة/التعديل =================
+
+function openModal(rowIndex) {
+  editingRowIndex = rowIndex || null;
+  pendingImageUrl = null;
+
+  document.getElementById("modalTitle").textContent = rowIndex ? "تعديل الصنف" : "إضافة صنف";
+  document.getElementById("modalOverlay").classList.remove("hidden");
+
+  // إعادة ضبط معاينة الصورة
+  const preview = document.getElementById("imagePreview");
+  const hint = document.getElementById("uploadHint");
+  document.getElementById("imageFileInput").value = "";
+
+  let existing = {};
+  if (rowIndex) {
+    existing = items.find(it => it.rowIndex === rowIndex) || {};
+  }
+  currentImageValue = existing[IMAGE_COLUMN] || "";
+
+  if (currentImageValue) {
+    preview.src = currentImageValue;
+    preview.classList.remove("hidden");
+    hint.textContent = "دوس لتغيير الصورة";
+  } else {
+    preview.classList.add("hidden");
+    hint.textContent = "دوس هنا لاختيار صورة";
+  }
+
+  // بناء الحقول ديناميكيًا حسب أعمدة الشيت (ما عدا عمود الصورة، بنعالجه لوحده)
+  const container = document.getElementById("dynamicFields");
+  container.innerHTML = "";
+  headers.forEach(h => {
+    if (h === IMAGE_COLUMN) return;
+    const val = existing[h] !== undefined ? existing[h] : "";
+    const isLong = h === DESC_COLUMN;
+    container.innerHTML += `
+      <div class="field">
+        <label>${h}</label>
+        ${isLong
+          ? `<textarea data-field="${h}">${val}</textarea>`
+          : `<input type="text" data-field="${h}" value="${String(val).replace(/"/g,'&quot;')}">`
+        }
+      </div>
+    `;
+  });
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.add("hidden");
+}
+
+// ================= رفع الصورة =================
+
+function handleImageSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  compressImage(file, 900, 0.75).then(({ base64, mimeType }) => {
+    const preview = document.getElementById("imagePreview");
+    preview.src = "data:" + mimeType + ";base64," + base64;
+    preview.classList.remove("hidden");
+    document.getElementById("uploadHint").textContent = "دوس لتغيير الصورة";
+
+    // نخزن البيانات مؤقتًا، هترفع فعليًا عند الحفظ
+    pendingImageUrl = { base64, mimeType, fileName: file.name };
+  }).catch(err => {
+    toast("تعذرت معالجة الصورة: " + err.message, "error");
+  });
+}
+
+// تصغير وضغط الصورة قبل الرفع (تحويلها لـ JPEG بجودة معقولة)
+function compressImage(file, maxWidth, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxWidth) {
+          h = Math.round(h * (maxWidth / w));
+          w = maxWidth;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        const base64 = dataUrl.split(",")[1];
+        resolve({ base64, mimeType: "image/jpeg" });
+      };
+      img.onerror = () => reject(new Error("ملف صورة غير صالح"));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error("تعذرت قراءة الملف"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadPendingImageIfAny() {
+  if (!pendingImageUrl) return currentImageValue; // مفيش صورة جديدة، استخدم القديمة
+  document.getElementById("uploadProgress").classList.remove("hidden");
+  try {
+    const res = await callApi({
+      action: "uploadImage",
+      fileName: pendingImageUrl.fileName,
+      mimeType: pendingImageUrl.mimeType,
+      base64Data: pendingImageUrl.base64
     });
-    return res.json();
+    document.getElementById("uploadProgress").classList.add("hidden");
+    if (res.success) return res.url;
+    throw new Error(res.message || "فشل رفع الصورة");
+  } catch (err) {
+    document.getElementById("uploadProgress").classList.add("hidden");
+    throw err;
   }
+}
 
-  // ===== تسجيل الدخول =====
-  $("#login-btn").addEventListener("click", doLogin);
-  $("#password-input").addEventListener("keydown", (e) => { if(e.key === "Enter") doLogin(); });
+// ================= حفظ / حذف =================
 
-  async function doLogin(){
-    const pass = $("#password-input").value.trim();
-    const errEl = $("#login-error");
-    errEl.textContent = "";
-    if(!pass){ errEl.textContent = "اكتب كلمة السر"; return; }
+async function saveItem() {
+  const saveBtn = document.getElementById("saveBtn");
+  saveBtn.disabled = true;
+  saveBtn.textContent = "جاري الحفظ...";
 
-    $("#login-btn").textContent = "جاري التحقق...";
-    try{
-      const result = await apiPost({ action: "login", password: pass });
-      if(result.success){
-        currentPassword = pass;
-        sessionStorage.setItem("adminPass", pass);
-        enterApp();
-      } else {
-        errEl.textContent = "كلمة السر غير صحيحة";
-      }
-    } catch(err){
-      errEl.textContent = "في مشكلة في الاتصال بالسيرفر";
-    }
-    $("#login-btn").textContent = "دخول";
-  }
+  try {
+    const imageUrl = await uploadPendingImageIfAny();
 
-  function enterApp(){
-    $("#login-screen").style.display = "none";
-    $("#app").style.display = "block";
-    loadMenu();
-  }
-
-  $("#logout-btn").addEventListener("click", () => {
-    sessionStorage.removeItem("adminPass");
-    currentPassword = "";
-    $("#app").style.display = "none";
-    $("#login-screen").style.display = "flex";
-    $("#password-input").value = "";
-  });
-
-  // ===== تحميل المنيو =====
-  async function loadMenu(){
-    showStatus("جاري تحميل المنيو...", "");
-    try{
-      const result = await apiGet("getMenu");
-      if(result.success){
-        menuItems = result.data;
-        menuHeaders = menuItems.length ? Object.keys(menuItems[0]).filter(k => k !== "id") : [];
-        clearStatus();
-        renderItems(menuItems);
-      } else {
-        showStatus("تعذر تحميل المنيو", "error");
-      }
-    } catch(err){
-      showStatus("في مشكلة في الاتصال بالسيرفر", "error");
-    }
-  }
-
-  // ===== عرض الأصناف =====
-  function renderItems(items){
-    const container = $("#items-container");
-    if(!items.length){
-      container.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-        <div>مفيش أصناف لسه</div>
-        <button class="btn btn-gold" onclick="openForm()">+ إضافة أول صنف</button>
-      </div>`;
-      return;
-    }
-
-    container.innerHTML = items.map(item => {
-      const imgKey = menuHeaders.find(isImageKey);
-      const priceKey = menuHeaders.find(isPriceKey);
-      const nameKey = menuHeaders.find(k => !isImageKey(k) && !isPriceKey(k) && !isLongTextKey(k)) || menuHeaders[0];
-      const otherKeys = menuHeaders.filter(k => k !== imgKey && k !== priceKey && k !== nameKey);
-
-      const imgUrl = imgKey ? item[imgKey] : "";
-      const thumb = imgUrl
-        ? `<img class="item-thumb" src="${escapeAttr(imgUrl)}" onerror="this.outerHTML='<div class=&quot;item-thumb placeholder&quot;>بلا صورة</div>'">`
-        : `<div class="item-thumb placeholder">بلا صورة</div>`;
-
-      return `
-        <div class="item-card">
-          <span class="item-id-badge">#${item.id}</span>
-          ${thumb}
-          <div class="item-body">
-            <div class="item-name">${escapeHtml(nameKey ? item[nameKey] : '')}</div>
-            ${otherKeys.map(k => `<div class="item-field"><strong>${escapeHtml(k)}:</strong> ${escapeHtml(String(item[k] ?? ''))}</div>`).join('')}
-            ${priceKey ? `<div class="item-price">${escapeHtml(String(item[priceKey]))}</div>` : ''}
-          </div>
-          <div class="item-actions">
-            <button class="btn btn-outline" onclick="openForm(${item.id})">تعديل</button>
-            <button class="btn btn-danger" onclick="deleteItemConfirm(${item.id})">حذف</button>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-  function escapeAttr(str){ return escapeHtml(str); }
-
-  // ===== البحث =====
-  $("#search-input").addEventListener("input", (e) => {
-    const q = e.target.value.trim().toLowerCase();
-    if(!q){ renderItems(menuItems); return; }
-    const filtered = menuItems.filter(item =>
-      Object.values(item).some(v => String(v).toLowerCase().includes(q))
-    );
-    renderItems(filtered);
-  });
-
-  // ===== فورم الإضافة/التعديل =====
-  $("#add-btn").addEventListener("click", () => openForm());
-  $("#cancel-btn").addEventListener("click", closeForm);
-
-  function openForm(id){
-    editingId = id || null;
-    const item = id ? menuItems.find(i => i.id === id) : null;
-    $("#form-title").textContent = item ? "تعديل الصنف" : "إضافة صنف جديد";
-    $("#form-error").textContent = "";
-
-    $("#form-fields").innerHTML = menuHeaders.map(key => {
-      const val = item ? (item[key] ?? "") : "";
-      if(isLongTextKey(key)){
-        return `<div class="field-group"><label>${escapeHtml(key)}</label>
-          <textarea data-field="${escapeAttr(key)}">${escapeHtml(val)}</textarea></div>`;
-      }
-      if(isPriceKey(key)){
-        return `<div class="field-group"><label>${escapeHtml(key)}</label>
-          <input type="number" step="0.01" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}"></div>`;
-      }
-      if(isImageKey(key)){
-        return `<div class="field-group"><label>${escapeHtml(key)}</label>
-          <input type="url" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}" placeholder="https://..."></div>`;
-      }
-      return `<div class="field-group"><label>${escapeHtml(key)}</label>
-        <input type="text" data-field="${escapeAttr(key)}" value="${escapeAttr(val)}"></div>`;
-    }).join('');
-
-    $("#form-modal").classList.add("open");
-  }
-
-  function closeForm(){
-    $("#form-modal").classList.remove("open");
-    editingId = null;
-  }
-
-  $("#save-btn").addEventListener("click", async () => {
-    const fields = document.querySelectorAll("#form-fields [data-field]");
     const item = {};
-    fields.forEach(f => item[f.dataset.field] = f.value);
-    if(editingId) item.id = editingId;
+    document.querySelectorAll("#dynamicFields [data-field]").forEach(el => {
+      item[el.dataset.field] = el.value;
+    });
+    item[IMAGE_COLUMN] = imageUrl || "";
 
-    $("#save-btn").textContent = "جاري الحفظ...";
-    $("#form-error").textContent = "";
-    try{
-      const action = editingId ? "updateItem" : "addItem";
-      const result = await apiPost({ action, item, password: currentPassword });
-      if(result.success){
-        closeForm();
-        loadMenu();
-      } else {
-        $("#form-error").textContent = result.error || "حصل خطأ، حاول تاني";
-      }
-    } catch(err){
-      $("#form-error").textContent = "في مشكلة في الاتصال بالسيرفر";
+    let res;
+    if (editingRowIndex) {
+      res = await callApi({ action: "editItem", rowIndex: editingRowIndex, item });
+    } else {
+      res = await callApi({ action: "addItem", item });
     }
-    $("#save-btn").textContent = "حفظ";
-  });
 
-  // ===== الحذف =====
-  async function deleteItemConfirm(id){
-    if(!confirm("متأكد إنك عايز تحذف الصنف ده؟")) return;
-    showStatus("جاري الحذف...", "");
-    try{
-      const result = await apiPost({ action: "deleteItem", id, password: currentPassword });
-      if(result.success){
-        showStatus("تم الحذف", "success");
-        loadMenu();
-      } else {
-        showStatus(result.error || "تعذر الحذف", "error");
-      }
-    } catch(err){
-      showStatus("في مشكلة في الاتصال بالسيرفر", "error");
+    if (res.success) {
+      toast("تم الحفظ بنجاح", "success");
+      closeModal();
+      loadMenu();
+    } else {
+      toast(res.message || "فشل الحفظ", "error");
     }
+  } catch (err) {
+    toast("خطأ: " + err.message, "error");
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = "حفظ";
   }
+}
 
-  // ===== دخول تلقائي لو الباسورد محفوظة في الجلسة =====
-  if(currentPassword){
-    enterApp();
+function deleteItemConfirm(rowIndex) {
+  if (!confirm("متأكد إنك عايز تحذف الصنف ده؟")) return;
+  deleteItem(rowIndex);
+}
+
+async function deleteItem(rowIndex) {
+  try {
+    const res = await callApi({ action: "deleteItem", rowIndex });
+    if (res.success) {
+      toast("تم الحذف", "success");
+      loadMenu();
+    } else {
+      toast(res.message || "فشل الحذف", "error");
+    }
+  } catch (err) {
+    toast("خطأ: " + err.message, "error");
   }
+}
+
+// ================= بدء التشغيل =================
+
+if (sessionStorage.getItem("loggedIn") === "1") {
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  loadMenu();
+}
 </script>
 </body>
 </html>
