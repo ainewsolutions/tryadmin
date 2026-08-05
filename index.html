@@ -6,132 +6,27 @@
 <title>Restaurant CMS</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Cairo, sans-serif;
-}
-
-body {
-    background: #f5f5f5;
-}
-
-/* تنسيقات شاشة تسجيل الدخول */
-.login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-.login-box {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-}
-
-.login-box input {
-    padding: 12px;
-    width: 100%;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    text-align: center;
-}
-
-.login-box button {
-    padding: 12px 20px;
-    background-color: #222;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.login-box button:hover {
-    background-color: #111;
-}
-
-/* تنسيقات لوحة التحكم */
-header {
-    height: 70px;
-    background: #222;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 25px;
-}
-
-.container {
-    display: flex;
-    height: calc(100vh - 70px);
-}
-
-aside {
-    width: 250px;
-    background: #fff;
-    border-left: 1px solid #ddd;
-    padding: 20px;
-}
-
-aside button {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    background: #f2f2f2;
-    font-size: 16px;
-}
-
-aside button:hover {
-    background: #111;
-    color: white;
-}
-
-main {
-    flex: 1;
-    padding: 25px;
-    overflow: auto;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    text-align: center;
-}
-
-img {
-    width: 70px;
-    border-radius: 8px;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Cairo, sans-serif; }
+body { background: #f5f5f5; }
+.login-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+.login-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.08); text-align: center; width: 90%; max-width: 400px; }
+.login-box input { padding: 12px; width: 100%; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; }
+.login-box button { padding: 12px 20px; background-color: #222; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+.login-box button:hover { background-color: #111; }
+header { height: 70px; background: #222; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 25px; min-width: 900px; }
+.container { display: flex; height: calc(100vh - 70px); }
+aside { width: 250px; background: #fff; border-left: 1px solid #ddd; padding: 20px; flex-shrink: 0; }
+aside button { width: 100%; padding: 14px; margin-bottom: 10px; border: none; border-radius: 10px; cursor: pointer; background: #f2f2f2; font-size: 16px; }
+aside button:hover { background: #111; color: white; }
+main { flex: 1; padding: 25px; overflow: auto; }
+.card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,.08); min-width: 950px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
+th { background-color: #f9f9f9; }
+table input, table select { padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 100%; text-align: center; font-family: Cairo, sans-serif; font-size: 13px; }
+table input:focus, table select:focus { outline: none; border-color: #007bff; }
 </style>
 </head>
-
 <body>
 
 <!-- شاشة تسجيل الدخول -->
@@ -174,42 +69,37 @@ const ADMIN_PASSWORD = "admin123";
 function checkPassword() {
     const passInput = document.getElementById("admin-password").value;
     const errorMsg = document.getElementById("login-error");
-    
     if (passInput === ADMIN_PASSWORD) {
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("main-dashboard").style.display = "block";
         errorMsg.style.display = "none";
-        
         loadRestaurant();
     } else {
         errorMsg.style.display = "block";
     }
 }
 
-// رابط API الجديد الخاص بك
-const API = "https://script.google.com/macros/s/AKfycbxgW1R0J99e_JOg4yAwsOubg1EpNP7RgF1TvdohtiiGDnc1eaCEGD-r7K74ObL9xMkyDg/exec";
+// رابط الـ API الجديد مع دعم رفع الصور
+const API = "https://script.google.com/macros/s/AKfycbyaWpr7pkFPuISIC_2_sTQTh4_B6S3mkEUhmyz-hoYlnGq20Xj7W0KDL7cc8mJxBZqNCg/exec";
 
-// دالة لجلب البيانات (GET)
 async function api(action){
     const r = await fetch(API + "?action=" + action);
     return await r.json();
 }
 
-// دالة إرسال البيانات للتحديث (POST) مع التعديل اللازم لتخطي الـ CORS
 async function apiPost(data){
     const r = await fetch(API, {
         method: "POST",
-        headers: {
-            "Content-Type": "text/plain;charset=utf-8",
-        },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(data),
         redirect: "follow"
     });
     return await r.json();
 }
 
-// قائمة لحفظ مفاتيح الإعدادات مؤقتاً
 let currentSettingsKeys = [];
+let currentThemeKeys = [];
+let currentCategories = []; 
 
 async function loadProducts(){
     content.innerHTML = "<div class='card'><h2>جارِ تحميل المنتجات... ⏳</h2></div>";
@@ -240,103 +130,293 @@ async function loadProducts(){
     content.innerHTML = html;
 }
 
+// ==========================================
+// قسم الأقسام مع ميزة رفع الصور المباشر
+// ==========================================
 async function loadCategories(){
     content.innerHTML = "<div class='card'><h2>جارِ تحميل الأقسام... ⏳</h2></div>";
     const json = await api("getCategories");
-    let html = `<div class="card"><h2>الأقسام</h2><br><table>
-        <tr>
-            <th>ID</th>
-            <th>الاسم</th>
-        </tr>`;
-    json.data.forEach(c => {
-        html += `
-            <tr>
-                <td>${c.id}</td>
-                <td>${c.name_ar}</td>
-            </tr>
-        `;
-    });
-    html += "</table></div>";
-    content.innerHTML = html;
+    currentCategories = json.data || [];
+    renderCategories();
 }
 
-async function loadRestaurant(){
-    content.innerHTML = "<div class='card'><h2>جارِ تحميل بيانات المطعم... ⏳</h2></div>";
-    
-    const json = await api("getRestaurantInfo");
-    
-    const nameObj = json.data.find(item => item.Key === "restaurant_name_ar" || item.Key === "restaurant_name");
-    restaurantName.innerHTML = nameObj ? nameObj.Value : "Restaurant CMS";
-    
-    currentSettingsKeys = []; // إعادة تعيين
-    
+function renderCategories() {
     let html = `
     <div class="card">
-        <h2 style="margin-bottom: 20px;">🏪 إعدادات المطعم</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>📂 إدارة الأقسام</h2>
+            <button onclick="addNewCategory()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">➕ إضافة قسم جديد</button>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <tr>
+                    <th style="width: 70px;">ID</th>
+                    <th>الاسم (عربي)</th>
+                    <th>الاسم (إنجليزي)</th>
+                    <th style="width: 220px;">صورة القسم (Drive)</th>
+                    <th style="width: 100px;">أيقونة (icon)</th>
+                    <th style="width: 60px;">الترتيب</th>
+                    <th style="width: 80px;">مفعل؟</th>
+                    <th style="width: 70px;">إجراء</th>
+                </tr>
     `;
     
-    json.data.forEach(item => {
-        if(!item.Key) return; 
-        currentSettingsKeys.push(item.Key); // حفظ اسم المفتاح
+    currentCategories.forEach((c, index) => {
+        if (!c.id && !c.name_ar) return; 
+        let isActive = String(c.active).toUpperCase() === "TRUE" || c.active === true;
         
         html += `
-            <div style="display: flex; flex-direction: column; text-align: right;">
-                <label style="margin-bottom: 5px; font-weight: 600; color: #333;">${item.Key}</label>
-                <input type="text" id="${item.Key}" value="${item.Value || ''}" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
-            </div>
+            <tr>
+                <td><input type="text" id="cat_id_${index}" value="${c.id || ''}" style="direction: ltr;"></td>
+                <td><input type="text" id="cat_name_ar_${index}" value="${c.name_ar || ''}"></td>
+                <td><input type="text" id="cat_name_en_${index}" value="${c.name_en || ''}"></td>
+                <td>
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <input type="text" id="cat_image_id_${index}" value="${c.image_id || ''}" placeholder="معرف الصورة" style="direction: ltr;">
+                        <input type="file" id="file_input_${index}" style="display: none;" onchange="uploadImage(this, ${index})">
+                        <button onclick="document.getElementById('file_input_${index}').click()" style="padding: 8px; background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; white-space: nowrap;" title="رفع صورة جديدة">📁 رفع</button>
+                    </div>
+                </td>
+                <td><input type="text" id="cat_icon_${index}" value="${c.icon || ''}" style="direction: ltr;"></td>
+                <td><input type="number" id="cat_sort_${index}" value="${c.sort || ''}"></td>
+                <td>
+                    <select id="cat_active_${index}">
+                        <option value="TRUE" ${isActive ? 'selected' : ''}>نعم</option>
+                        <option value="FALSE" ${!isActive ? 'selected' : ''}>لا</option>
+                    </select>
+                </td>
+                <td><button onclick="removeCategory(${index})" style="padding: 6px 10px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">🗑️ حذف</button></td>
+            </tr>
         `;
     });
     
     html += `
+            </table>
         </div>
         <br><br>
-        <button id="saveBtn" onclick="saveRestaurantInfo()" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التعديلات</button>
+        <button id="saveCatBtn" onclick="saveCategoriesInfo()" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ الأقسام</button>
     </div>`;
     
     content.innerHTML = html;
 }
 
-// دالة حفظ إعدادات المطعم
-async function saveRestaurantInfo() {
-    const btn = document.getElementById("saveBtn");
+// دالة رفع الصورة وتحويلها لـ Base64 ثم إرسالها لسيرفر جوجل
+async function uploadImage(inputElement, index) {
+    const file = inputElement.files[0];
+    if (!file) return;
+
+    const btn = inputElement.nextElementSibling;
+    const originalText = btn.innerText;
+    btn.innerText = "رفع... ⏳";
+    btn.disabled = true;
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        // استخراج محتوى الـ Base64
+        const base64String = e.target.result.split(',')[1];
+        
+        try {
+            const response = await apiPost({
+                action: "uploadImage",
+                payload: {
+                    base64: base64String,
+                    filename: file.name,
+                    mimeType: file.type
+                }
+            });
+
+            if (response.success) {
+                // وضع الـ File ID في حقل الـ image_id تلقائياً
+                document.getElementById(`cat_image_id_${index}`).value = response.fileId;
+                alert("✅ تم رفع الصورة بنجاح وتوليد المعرف!");
+            } else {
+                alert("❌ فشل الرفع: " + response.message);
+            }
+        } catch (err) {
+            alert("❌ حدث خطأ أثناء الاتصال بالخادم!");
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+            inputElement.value = ""; // تفريغ حقل الملف
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function addNewCategory() {
+    const randomId = "cat_" + Math.floor(Math.random() * 10000);
+    currentCategories.push({ 
+        id: randomId, 
+        name_ar: "", 
+        name_en: "", 
+        image_id: "", 
+        icon: "", 
+        sort: currentCategories.length + 1, 
+        active: "TRUE" 
+    });
+    renderCategories(); 
+}
+
+function removeCategory(index) {
+    if(confirm("هل أنت متأكد من حذف هذا القسم؟")) {
+        currentCategories.splice(index, 1);
+        renderCategories(); 
+    }
+}
+
+async function saveCategoriesInfo() {
+    const btn = document.getElementById("saveCatBtn");
     btn.disabled = true;
     btn.innerText = "جارِ الحفظ... ⏳";
     
-    let payload = {};
-    currentSettingsKeys.forEach(key => {
-        const input = document.getElementById(key);
-        if (input) {
-            payload[key] = input.value;
+    let payload = [];
+    currentCategories.forEach((c, index) => {
+        const idInput = document.getElementById("cat_id_" + index);
+        const nameArInput = document.getElementById("cat_name_ar_" + index);
+        const nameEnInput = document.getElementById("cat_name_en_" + index);
+        const imageIdInput = document.getElementById("cat_image_id_" + index);
+        const iconInput = document.getElementById("cat_icon_" + index);
+        const sortInput = document.getElementById("cat_sort_" + index);
+        const activeInput = document.getElementById("cat_active_" + index);
+
+        if (idInput && nameArInput) {
+            if(idInput.value.trim() !== "" || nameArInput.value.trim() !== "") {
+                payload.push({
+                    id: idInput.value.trim(),
+                    name_ar: nameArInput.value.trim(),
+                    name_en: nameEnInput ? nameEnInput.value.trim() : "",
+                    image_id: imageIdInput ? imageIdInput.value.trim() : "",
+                    icon: iconInput ? iconInput.value.trim() : "",
+                    sort: sortInput ? sortInput.value.trim() : "",
+                    active: activeInput ? activeInput.value : "TRUE"
+                });
+            }
         }
     });
 
     try {
         const response = await apiPost({
-            action: "saveRestaurantInfo",
+            action: "saveCategories",
             payload: payload
         });
-
         if (response.success) {
-            alert("✅ تم حفظ التعديلات بنجاح في Google Sheets!");
-            loadRestaurant(); // إعادة تحميل البيانات للتأكيد
+            alert("✅ تم حفظ الأقسام بنجاح!");
+            loadCategories(); 
         } else {
             alert("❌ حدث خطأ: " + response.message);
         }
     } catch (err) {
         alert("❌ حدث خطأ أثناء الاتصال بالسيرفر!");
     } finally {
-        btn.disabled = false;
-        btn.innerText = "💾 حفظ التعديلات";
+        if(btn) {
+            btn.disabled = false;
+            btn.innerText = "💾 حفظ الأقسام";
+        }
+    }
+}
+// ==========================================
+
+async function loadRestaurant(){
+    content.innerHTML = "<div class='card'><h2>جارِ تحميل بيانات المطعم... ⏳</h2></div>";
+    const json = await api("getRestaurantInfo");
+    const nameObj = json.data.find(item => item.Key === "restaurant_name_ar" || item.Key === "restaurant_name");
+    restaurantName.innerHTML = nameObj ? nameObj.Value : "Restaurant CMS";
+    
+    currentSettingsKeys = []; 
+    let html = `
+    <div class="card">
+        <h2 style="margin-bottom: 20px;">🏪 إعدادات المطعم</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+    `;
+    json.data.forEach(item => {
+        if(!item.Key) return; 
+        currentSettingsKeys.push(item.Key); 
+        html += `
+            <div style="display: flex; flex-direction: column; text-align: right;">
+                <label style="margin-bottom: 5px; font-weight: 600; color: #333;">${item.Key}</label>
+                <input type="text" id="setting_${item.Key}" value="${item.Value || ''}" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; direction: ltr;">
+            </div>
+        `;
+    });
+    html += `
+        </div>
+        <br><br>
+        <button id="saveBtn" onclick="saveRestaurantInfo()" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التعديلات</button>
+    </div>`;
+    content.innerHTML = html;
+}
+
+async function saveRestaurantInfo() {
+    const btn = document.getElementById("saveBtn");
+    btn.disabled = true;
+    btn.innerText = "جارِ الحفظ... ⏳";
+    let payload = {};
+    currentSettingsKeys.forEach(key => {
+        const input = document.getElementById("setting_" + key);
+        if (input) payload[key] = input.value;
+    });
+    try {
+        const response = await apiPost({ action: "saveRestaurantInfo", payload: payload });
+        if (response.success) {
+            alert("✅ تم حفظ التعديلات بنجاح!");
+            loadRestaurant();
+        } else alert("❌ حدث خطأ: " + response.message);
+    } catch (err) {
+        alert("❌ حدث خطأ أثناء الاتصال بالسيرفر!");
+    } finally {
+        btn.disabled = false; btn.innerText = "💾 حفظ التعديلات";
     }
 }
 
 async function loadTheme(){
     content.innerHTML = "<div class='card'><h2>جارِ تحميل التصميم... ⏳</h2></div>";
     const json = await api("getTheme");
-    content.innerHTML = "<div class='card'><pre>" + JSON.stringify(json.data, null, 2) + "</pre></div>";
+    currentThemeKeys = []; 
+    let html = `
+    <div class="card">
+        <h2 style="margin-bottom: 20px;">🎨 إعدادات التصميم</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+    `;
+    json.data.forEach(item => {
+        if(!item.Key) return; 
+        currentThemeKeys.push(item.Key); 
+        html += `
+            <div style="display: flex; flex-direction: column; text-align: right;">
+                <label style="margin-bottom: 5px; font-weight: 600; color: #333;">${item.Key}</label>
+                <input type="text" id="theme_${item.Key}" value="${item.Value || ''}" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; direction: ltr;">
+            </div>
+        `;
+    });
+    html += `
+        </div>
+        <br><br>
+        <button id="saveThemeBtn" onclick="saveThemeInfo()" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التصميم</button>
+    </div>`;
+    content.innerHTML = html;
+}
+
+async function saveThemeInfo() {
+    const btn = document.getElementById("saveThemeBtn");
+    btn.disabled = true;
+    btn.innerText = "جارِ الحفظ... ⏳";
+    let payload = {};
+    currentThemeKeys.forEach(key => {
+        const input = document.getElementById("theme_" + key);
+        if (input) payload[key] = input.value;
+    });
+    try {
+        const response = await apiPost({ action: "saveThemeInfo", payload: payload });
+        if (response.success) {
+            alert("✅ تم حفظ التصميم بنجاح!");
+            loadTheme();
+        } else alert("❌ حدث خطأ: " + response.message);
+    } catch (err) {
+        alert("❌ حدث خطأ أثناء الاتصال بالسيرفر!");
+    } finally {
+        btn.disabled = false; btn.innerText = "💾 حفظ التصميم";
+    }
 }
 </script>
-
 </body>
 </html>
