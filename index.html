@@ -3,271 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Restaurant CMS</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Cairo,sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Cairo, sans-serif;
 }
 
-body{
-background:#f5f5f5;
+body {
+    background: #f5f5f5;
 }
 
-header{
-height:70px;
-background:#222;
-color:#fff;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 25px;
+/* تنسيقات شاشة تسجيل الدخول */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-.container{
-display:flex;
-height:calc(100vh - 70px);
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
 }
 
-aside{
-width:250px;
-background:#fff;
-border-left:1px solid #ddd;
-padding:20px;
+.login-box input {
+    padding: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
 }
 
-aside button{
-
-width:100%;
-padding:14px;
-margin-bottom:10px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-background:#f2f2f2;
-font-size:16px;
-
+.login-box button {
+    padding: 12px 20px;
+    background-color: #222;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
 }
 
-aside button:hover{
-
-background:#111;
-color:white;
-
+.login-box button:hover {
+    background-color: #111;
 }
 
-main{
-
-flex:1;
-padding:25px;
-overflow:auto;
-
+/* تنسيقات لوحة التحكم الأصلية */
+header {
+    height: 70px;
+    background: #222;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
 }
 
-.card{
-
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,.08);
-
+.container {
+    display: flex;
+    height: calc(100vh - 70px);
 }
 
-table{
-
-width:100%;
-border-collapse:collapse;
-
+aside {
+    width: 250px;
+    background: #fff;
+    border-left: 1px solid #ddd;
+    padding: 20px;
 }
 
-th,td{
-
-padding:12px;
-border-bottom:1px solid #eee;
-text-align:center;
-
+aside button {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #f2f2f2;
+    font-size: 16px;
 }
 
-img{
-
-width:70px;
-border-radius:8px;
-
+aside button:hover {
+    background: #111;
+    color: white;
 }
 
+main {
+    flex: 1;
+    padding: 25px;
+    overflow: auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+img {
+    width: 70px;
+    border-radius: 8px;
+}
 </style>
-
 </head>
 
 <body>
 
-<header>
-
-<h2>Restaurant CMS</h2>
-
-<div id="restaurantName">Loading...</div>
-
-</header>
-
-<div class="container">
-
-<aside>
-
-<button onclick="loadProducts()">🍔 المنتجات</button>
-
-<button onclick="loadCategories()">📂 الأقسام</button>
-
-<button onclick="loadRestaurant()">🏪 بيانات المطعم</button>
-
-<button onclick="loadTheme()">🎨 التصميم</button>
-
-</aside>
-
-<main id="content">
-
-<div class="card">
-
-<h2>مرحباً بك</h2>
-
-<br>
-
-اختر من القائمة.
-
+<!-- شاشة تسجيل الدخول -->
+<div id="login-screen" class="login-container">
+    <div class="login-box">
+        <h2 style="margin-bottom: 25px; color: #222;">تسجيل الدخول للإدارة</h2>
+        <input type="password" id="admin-password" placeholder="أدخل كلمة المرور">
+        <button onclick="checkPassword()">دخول</button>
+        <p id="login-error" style="color: red; display: none; margin-top: 15px; font-weight: 600;">كلمة المرور غير صحيحة!</p>
+    </div>
 </div>
 
-</main>
+<!-- لوحة التحكم (مخفية في البداية) -->
+<div id="main-dashboard" style="display: none;">
+    <header>
+        <h2>Restaurant CMS</h2>
+        <div id="restaurantName">Loading...</div>
+    </header>
 
+    <div class="container">
+        <aside>
+            <button onclick="loadProducts()">🍔 المنتجات</button>
+            <button onclick="loadCategories()">📂 الأقسام</button>
+            <button onclick="loadRestaurant()">🏪 بيانات المطعم</button>
+            <button onclick="loadTheme()">🎨 التصميم</button>
+        </aside>
+        <main id="content">
+            <div class="card">
+                <h2>مرحباً بك</h2>
+                <br>
+                اختر من القائمة الجانبية لإدارة محتوى المطعم.
+            </div>
+        </main>
+    </div>
 </div>
 
 <script>
+// كلمة المرور المؤقتة (يمكن تغييرها لاحقاً)
+const ADMIN_PASSWORD = "admin123";
 
-const API="https://script.google.com/macros/s/AKfycbwMxCA3oVEQNrpic7aoEIXRRtqQv68jFRZqaOBqeQ862stZy3musgcXM_jU6uHy0sXlUA/exec";
+function checkPassword() {
+    const passInput = document.getElementById("admin-password").value;
+    const errorMsg = document.getElementById("login-error");
+    
+    if (passInput === ADMIN_PASSWORD) {
+        // إخفاء شاشة الدخول وإظهار لوحة التحكم
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("main-dashboard").style.display = "block";
+        errorMsg.style.display = "none";
+        
+        // جلب بيانات المطعم بعد تسجيل الدخول بنجاح
+        loadRestaurant();
+    } else {
+        // إظهار رسالة الخطأ
+        errorMsg.style.display = "block";
+    }
+}
+
+// رابط API الخاص بك (تأكد من استخدام رابط الـ /dev إذا كنت لا تزال تختبر وتعدل الكود في جوجل سكريبت)
+const API = "https://script.google.com/macros/s/AKfycbwMxCA3oVEQNrpic7aoEIXRRtqQv68jFRZqaOBqeQ862stZy3musgcXM_jU6uHy0sXlUA/exec";
 
 async function api(action){
-
-const r=await fetch(API+"?action="+action);
-
-return await r.json();
-
+    const r = await fetch(API + "?action=" + action);
+    return await r.json();
 }
 
 async function loadProducts(){
-
-const json=await api("getProducts");
-
-let html=`
-
-<div class="card">
-
-<h2>المنتجات</h2>
-
-<br>
-
-<table>
-
-<tr>
-
-<th>ID</th>
-
-<th>الصنف</th>
-
-<th>السعر</th>
-
-<th>متاح</th>
-
-</tr>
-
-`;
-
-json.data.forEach(p=>{
-
-html+=`
-
-<tr>
-
-<td>${p.id}</td>
-
-<td>${p.name_ar}</td>
-
-<td>${p.base_price}</td>
-
-<td>${p.available}</td>
-
-</tr>
-
-`;
-
-});
-
-html+=`</table></div>`;
-
-content.innerHTML=html;
-
+    const json = await api("getProducts");
+    let html = `
+    <div class="card">
+        <h2>المنتجات</h2>
+        <br>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>الصنف</th>
+                <th>السعر</th>
+                <th>متاح</th>
+            </tr>
+    `;
+    json.data.forEach(p => {
+        html += `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.name_ar}</td>
+                <td>${p.base_price}</td>
+                <td>${p.available}</td>
+            </tr>
+        `;
+    });
+    html += `</table></div>`;
+    content.innerHTML = html;
 }
 
 async function loadCategories(){
-
-const json=await api("getCategories");
-
-let html=`<div class="card"><h2>الأقسام</h2><br><table>
-
-<tr>
-
-<th>ID</th>
-
-<th>الاسم</th>
-
-</tr>`;
-
-json.data.forEach(c=>{
-
-html+=`
-
-<tr>
-
-<td>${c.id}</td>
-
-<td>${c.name_ar}</td>
-
-</tr>
-
-`;
-
-});
-
-html+="</table></div>";
-
-content.innerHTML=html;
-
+    const json = await api("getCategories");
+    let html = `<div class="card"><h2>الأقسام</h2><br><table>
+        <tr>
+            <th>ID</th>
+            <th>الاسم</th>
+        </tr>`;
+    json.data.forEach(c => {
+        html += `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.name_ar}</td>
+            </tr>
+        `;
+    });
+    html += "</table></div>";
+    content.innerHTML = html;
 }
 
 async function loadRestaurant(){
-
-const json=await api("getRestaurantInfo");
-
-restaurantName.innerHTML=json.data[0]?.restaurant_name_ar||"Restaurant";
-
-content.innerHTML="<div class='card'><pre>"+JSON.stringify(json.data,null,2)+"</pre></div>";
-
+    const json = await api("getRestaurantInfo");
+    restaurantName.innerHTML = json.data[0]?.restaurant_name_ar || "Restaurant";
+    content.innerHTML = "<div class='card'><pre>" + JSON.stringify(json.data, null, 2) + "</pre></div>";
 }
 
 async function loadTheme(){
-
-const json=await api("getTheme");
-
-content.innerHTML="<div class='card'><pre>"+JSON.stringify(json.data,null,2)+"</pre></div>";
-
+    const json = await api("getTheme");
+    content.innerHTML = "<div class='card'><pre>" + JSON.stringify(json.data, null, 2) + "</pre></div>";
 }
-
-loadRestaurant();
-
 </script>
 
 </body>
