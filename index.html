@@ -62,7 +62,7 @@ body {
     background-color: #111;
 }
 
-/* تنسيقات لوحة التحكم الأصلية */
+/* تنسيقات لوحة التحكم */
 header {
     height: 70px;
     background: #222;
@@ -144,7 +144,7 @@ img {
     </div>
 </div>
 
-<!-- لوحة التحكم (مخفية في البداية) -->
+<!-- لوحة التحكم -->
 <div id="main-dashboard" style="display: none;">
     <header>
         <h2>Restaurant CMS</h2>
@@ -169,7 +169,6 @@ img {
 </div>
 
 <script>
-// كلمة المرور المؤقتة 
 const ADMIN_PASSWORD = "admin123";
 
 function checkPassword() {
@@ -187,13 +186,26 @@ function checkPassword() {
     }
 }
 
-// رابط API الخاص بك
+// رابط API
 const API = "https://script.google.com/macros/s/AKfycbwMxCA3oVEQNrpic7aoEIXRRtqQv68jFRZqaOBqeQ862stZy3musgcXM_jU6uHy0sXlUA/exec";
 
+// دالة لجلب البيانات (GET)
 async function api(action){
     const r = await fetch(API + "?action=" + action);
     return await r.json();
 }
+
+// دالة إرسال البيانات للتحديث (POST)
+async function apiPost(data){
+    const r = await fetch(API, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+    return await r.json();
+}
+
+// قائمة لحفظ مفاتيح الإعدادات مؤقتاً
+let currentSettingsKeys = [];
 
 async function loadProducts(){
     content.innerHTML = "<div class='card'><h2>جارِ تحميل المنتجات... ⏳</h2></div>";
@@ -244,28 +256,25 @@ async function loadCategories(){
     content.innerHTML = html;
 }
 
-// الدالة الجديدة بعد التعديل
 async function loadRestaurant(){
-    // عرض رسالة تحميل مؤقتة
     content.innerHTML = "<div class='card'><h2>جارِ تحميل بيانات المطعم... ⏳</h2></div>";
     
     const json = await api("getRestaurantInfo");
     
-    // البحث عن اسم المطعم لتحديثه في الهيدر العلوي
     const nameObj = json.data.find(item => item.Key === "restaurant_name_ar" || item.Key === "restaurant_name");
     restaurantName.innerHTML = nameObj ? nameObj.Value : "Restaurant CMS";
     
-    // بناء واجهة المستخدم (حقول الإدخال)
+    currentSettingsKeys = []; // إعادة تعيين
+    
     let html = `
     <div class="card">
         <h2 style="margin-bottom: 20px;">🏪 إعدادات المطعم</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
     `;
     
-    // تحويل كل صف في الشيت إلى حقل إدخال
     json.data.forEach(item => {
-        // تخطي الصفوف الفارغة إن وجدت
         if(!item.Key) return; 
+        currentSettingsKeys.push(item.Key); // حفظ اسم المفتاح
         
         html += `
             <div style="display: flex; flex-direction: column; text-align: right;">
@@ -278,10 +287,44 @@ async function loadRestaurant(){
     html += `
         </div>
         <br><br>
-        <button onclick="alert('ممتاز! سيتم برمجة زر الحفظ في الخطوة القادمة.')" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التعديلات</button>
+        <button id="saveBtn" onclick="saveRestaurantInfo()" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التعديلات</button>
     </div>`;
     
     content.innerHTML = html;
+}
+
+// دالة حفظ إعدادات المطعم
+async function saveRestaurantInfo() {
+    const btn = document.getElementById("saveBtn");
+    btn.disabled = true;
+    btn.innerText = "جارِ الحفظ... ⏳";
+    
+    let payload = {};
+    currentSettingsKeys.forEach(key => {
+        const input = document.getElementById(key);
+        if (input) {
+            payload[key] = input.value;
+        }
+    });
+
+    try {
+        const response = await apiPost({
+            action: "saveRestaurantInfo",
+            payload: payload
+        });
+
+        if (response.success) {
+            alert("✅ تم حفظ التعديلات بنجاح في Google Sheets!");
+            loadRestaurant(); // إعادة تحميل البيانات للتأكيد
+        } else {
+            alert("❌ حدث خطأ: " + response.message);
+        }
+    } catch (err) {
+        alert("❌ حدث خطأ أثناء الاتصال بالسيرفر!");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "💾 حفظ التعديلات";
+    }
 }
 
 async function loadTheme(){
