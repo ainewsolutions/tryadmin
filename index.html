@@ -169,7 +169,7 @@ img {
 </div>
 
 <script>
-// كلمة المرور المؤقتة (يمكن تغييرها لاحقاً)
+// كلمة المرور المؤقتة 
 const ADMIN_PASSWORD = "admin123";
 
 function checkPassword() {
@@ -177,20 +177,17 @@ function checkPassword() {
     const errorMsg = document.getElementById("login-error");
     
     if (passInput === ADMIN_PASSWORD) {
-        // إخفاء شاشة الدخول وإظهار لوحة التحكم
         document.getElementById("login-screen").style.display = "none";
         document.getElementById("main-dashboard").style.display = "block";
         errorMsg.style.display = "none";
         
-        // جلب بيانات المطعم بعد تسجيل الدخول بنجاح
         loadRestaurant();
     } else {
-        // إظهار رسالة الخطأ
         errorMsg.style.display = "block";
     }
 }
 
-// رابط API الخاص بك (تأكد من استخدام رابط الـ /dev إذا كنت لا تزال تختبر وتعدل الكود في جوجل سكريبت)
+// رابط API الخاص بك
 const API = "https://script.google.com/macros/s/AKfycbwMxCA3oVEQNrpic7aoEIXRRtqQv68jFRZqaOBqeQ862stZy3musgcXM_jU6uHy0sXlUA/exec";
 
 async function api(action){
@@ -199,6 +196,7 @@ async function api(action){
 }
 
 async function loadProducts(){
+    content.innerHTML = "<div class='card'><h2>جارِ تحميل المنتجات... ⏳</h2></div>";
     const json = await api("getProducts");
     let html = `
     <div class="card">
@@ -227,6 +225,7 @@ async function loadProducts(){
 }
 
 async function loadCategories(){
+    content.innerHTML = "<div class='card'><h2>جارِ تحميل الأقسام... ⏳</h2></div>";
     const json = await api("getCategories");
     let html = `<div class="card"><h2>الأقسام</h2><br><table>
         <tr>
@@ -245,13 +244,48 @@ async function loadCategories(){
     content.innerHTML = html;
 }
 
+// الدالة الجديدة بعد التعديل
 async function loadRestaurant(){
+    // عرض رسالة تحميل مؤقتة
+    content.innerHTML = "<div class='card'><h2>جارِ تحميل بيانات المطعم... ⏳</h2></div>";
+    
     const json = await api("getRestaurantInfo");
-    restaurantName.innerHTML = json.data[0]?.restaurant_name_ar || "Restaurant";
-    content.innerHTML = "<div class='card'><pre>" + JSON.stringify(json.data, null, 2) + "</pre></div>";
+    
+    // البحث عن اسم المطعم لتحديثه في الهيدر العلوي
+    const nameObj = json.data.find(item => item.Key === "restaurant_name_ar" || item.Key === "restaurant_name");
+    restaurantName.innerHTML = nameObj ? nameObj.Value : "Restaurant CMS";
+    
+    // بناء واجهة المستخدم (حقول الإدخال)
+    let html = `
+    <div class="card">
+        <h2 style="margin-bottom: 20px;">🏪 إعدادات المطعم</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+    `;
+    
+    // تحويل كل صف في الشيت إلى حقل إدخال
+    json.data.forEach(item => {
+        // تخطي الصفوف الفارغة إن وجدت
+        if(!item.Key) return; 
+        
+        html += `
+            <div style="display: flex; flex-direction: column; text-align: right;">
+                <label style="margin-bottom: 5px; font-weight: 600; color: #333;">${item.Key}</label>
+                <input type="text" id="${item.Key}" value="${item.Value || ''}" style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+            </div>
+        `;
+    });
+    
+    html += `
+        </div>
+        <br><br>
+        <button onclick="alert('ممتاز! سيتم برمجة زر الحفظ في الخطوة القادمة.')" style="padding: 12px 25px; background-color: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">💾 حفظ التعديلات</button>
+    </div>`;
+    
+    content.innerHTML = html;
 }
 
 async function loadTheme(){
+    content.innerHTML = "<div class='card'><h2>جارِ تحميل التصميم... ⏳</h2></div>";
     const json = await api("getTheme");
     content.innerHTML = "<div class='card'><pre>" + JSON.stringify(json.data, null, 2) + "</pre></div>";
 }
